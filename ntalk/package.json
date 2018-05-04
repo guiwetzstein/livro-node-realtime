@@ -14,6 +14,7 @@
     "express": "~4.16.0",
     "express-session": "^1.15.6",
     "http-errors": "~1.6.2",
-    "method-override": "^2.3.10"
+    "method-override": "^2.3.10",
+    "socket.io": "^2.1.0"
   }
 }
