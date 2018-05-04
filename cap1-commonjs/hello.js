@@ -1,3 +1,3 @@
-module.exports	=	(msg)	=>	{
+module.exports = (msg) => {
     console.log(msg);
 };
