@@ -1,16 +1,32 @@
 const express = require('express');
 const path = require('path');
-const routes = require('./routes/index');
-const users = require('./routes/users');
+const consign = require('consign');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const expressSession = require('express-session');
+const methodOverride = require('method-override');
+const error = require('./middlewares/error');
 const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
-app.set('view	engine', 'ejs');
-
+app.set('view engine', 'ejs');
+app.use(cookieParser('ntalk'));
+app.use(expressSession());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/', routes);
-app.use('/usuarios', users);
+
+consign({})
+    .include('models')
+    .then('controllers')
+    .then('routes')
+    .into(app);
+
+// middleware de tratamento erros
+app.use(error.notFound);
+app.use(error.serverError);
 
 app.listen(3000, () => {
-    console.log('Ntalk	no	ar.');
+    console.log('Ntalk no ar.');
 });
