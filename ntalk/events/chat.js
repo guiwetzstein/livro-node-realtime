@@ -1,7 +1,15 @@
 module.exports = (app, io) => {
+    const onlines = {};
+
     io.on('connection', (client) => {
         const {session} = client.handshake;
         const {usuario} = session;
+
+        onlines[usuario.email] = usuario.email;
+        for (let email in onlines) {
+            client.emit('notify-onlines', email);
+            client.broadcast.emit('notify-onlines', email);
+        }
 
         client.on('send-server', (hashDaSala, msg) => {
             const novaMensagem = {
@@ -21,8 +29,12 @@ module.exports = (app, io) => {
 
         client.on('disconnect', () => {
             const {sala} = session;
+            const resposta = `<b>${usuario.nome}:</b> saiu.<br>`;
+            delete onlines[usuario.email];
             session.sala = null;
             client.leave(sala);
+            client.broadcast.emit('notify-offlines', usuario.email);
+            io.to(sala).emit('send-client', resposta);
         });
     });
 };
