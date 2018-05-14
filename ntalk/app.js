@@ -56,3 +56,5 @@ app.use(error.serverError);
 server.listen(3000, () => {
     console.log('Ntalk no ar.');
 });
+
+module.exports = app;
